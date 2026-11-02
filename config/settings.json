@@ -192,5 +192,15 @@
                                             200
                                         ]
                            }
-            }
+            },
+    "broadcasting":  {
+                         "host":  "127.0.0.1",
+                         "port":  9000,
+                         "reconnect_max":  3,
+                         "realtime_timeout_s":  5,
+                         "display_name":  "ACC Personal Race Assistant",
+                         "connection_password":  "asd",
+                         "command_password":  "",
+                         "update_interval_ms":  250
+                     }
 }

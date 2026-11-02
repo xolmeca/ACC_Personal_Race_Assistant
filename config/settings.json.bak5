@@ -1,0 +1,206 @@
+{
+    "lfm":  {
+                "min_races_for_reliable":  3,
+                "trend_threshold_ms":  100,
+                "lap_time_unit":  "ms",
+                "request_timeout":  15,
+                "cache_path":  "data/lfm_cache/track_history.json",
+                "raw_results_dir":  "data/lfm_cache/raw_results",
+                "log_path":  "logs/lfm.log",
+                "results_urls":  [
+
+                                 ],
+                "lobby_url_template":  "",
+                "lobby_cache_dir":  "data/lfm_cache",
+                "lobby_token_env":  "LFM_API_TOKEN",
+                "field_map":  {
+                                  "steamid":  [
+                                                  "steamid",
+                                                  "steam_id",
+                                                  "steamId"
+                                              ],
+                                  "track":  [
+                                                "track",
+                                                "trackname",
+                                                "track_name"
+                                            ],
+                                  "carmodel":  [
+                                                   "carmodel",
+                                                   "car_model",
+                                                   "car"
+                                               ],
+                                  "best_lap":  [
+                                                   "bestlap",
+                                                   "best_lap",
+                                                   "best_lap_time",
+                                                   "fastestlap"
+                                               ],
+                                  "avg_lap":  [
+                                                  "avglap",
+                                                  "avg_lap",
+                                                  "average_lap",
+                                                  "averagelap"
+                                              ],
+                                  "race_id":  [
+                                                  "raceid",
+                                                  "race_id",
+                                                  "id"
+                                              ],
+                                  "finished_at":  [
+                                                      "date",
+                                                      "finished_at",
+                                                      "timestamp",
+                                                      "race_date"
+                                                  ],
+                                  "rows_keys":  [
+                                                    "results",
+                                                    "drivers",
+                                                    "entries",
+                                                    "data"
+                                                ],
+                                  "lobby_steamid":  [
+                                                        "steamid",
+                                                        "steam_id",
+                                                        "steamId"
+                                                    ],
+                                  "lobby_name":  [
+                                                     "name",
+                                                     "username",
+                                                     "driver_name",
+                                                     "drivername"
+                                                 ],
+                                  "lobby_elo":  [
+                                                    "elo",
+                                                    "rating"
+                                                ],
+                                  "lobby_safetyrating":  [
+                                                             "safetyrating",
+                                                             "safety_rating",
+                                                             "sr"
+                                                         ],
+                                  "lobby_license":  [
+                                                        "license",
+                                                        "licence"
+                                                    ],
+                                  "lobby_carclass":  [
+                                                         "carclass",
+                                                         "car_class",
+                                                         "class"
+                                                     ],
+                                  "lobby_carmodel":  [
+                                                         "carmodel",
+                                                         "car_model",
+                                                         "car"
+                                                     ],
+                                  "lobby_split":  [
+                                                      "split"
+                                                  ],
+                                  "lobby_rows_keys":  [
+                                                          "participants",
+                                                          "drivers",
+                                                          "entries",
+                                                          "results",
+                                                          "users",
+                                                          "data"
+                                                      ],
+                                  "profile_lfm_id":  [
+                                                         "lfm_id",
+                                                         "lfmid",
+                                                         "userid",
+                                                         "user_id",
+                                                         "id"
+                                                     ],
+                                  "profile_steamid":  [
+                                                          "steamid",
+                                                          "steam_id",
+                                                          "steamId"
+                                                      ],
+                                  "profile_name":  [
+                                                       "name",
+                                                       "username",
+                                                       "driver_name",
+                                                       "drivername"
+                                                   ],
+                                  "profile_elo":  [
+                                                      "elo",
+                                                      "rating"
+                                                  ],
+                                  "profile_safetyrating":  [
+                                                               "safetyrating",
+                                                               "safety_rating",
+                                                               "sr"
+                                                           ],
+                                  "profile_license":  [
+                                                          "license",
+                                                          "licence"
+                                                      ],
+                                  "profile_carclass":  [
+                                                           "carclass",
+                                                           "car_class",
+                                                           "class"
+                                                       ],
+                                  "profile_carmodel":  [
+                                                           "carmodel",
+                                                           "car_model",
+                                                           "car"
+                                                       ],
+                                  "profile_split":  [
+                                                        "split"
+                                                    ],
+                                  "profile_car_preferences":  [
+                                                                  "car_preferences",
+                                                                  "carpreferences",
+                                                                  "favorite_cars",
+                                                                  "preferred_cars"
+                                                              ],
+                                  "profile_root_keys":  [
+                                                            "data.user",
+                                                            "profile.user",
+                                                            "profile",
+                                                            "user",
+                                                            "data"
+                                                        ]
+                              },
+                "profile_url_template":  "",
+                "profile_request_delay_s":  1,
+                "profile_cache_path":  "data/lfm_cache/profiles.json"
+            },
+    "acc":  {
+                "memory_names":  {
+                                     "physics":  "Local\\acpmf_physics",
+                                     "graphics":  "Local\\acpmf_graphics",
+                                     "static":  "Local\\acpmf_static"
+                                 },
+                "poll_interval_ms":  50,
+                "log_path":  "logs/acc.log",
+                "warn_interval_s":  5,
+                "ranges":  {
+                               "speed_kmh":  [
+                                                 0,
+                                                 400
+                                             ],
+                               "rpm":  [
+                                           0,
+                                           12000
+                                       ],
+                               "gear":  [
+                                            -1,
+                                            8
+                                        ],
+                               "fuel":  [
+                                            0,
+                                            200
+                                        ]
+                           }
+            },
+    "broadcasting":  {
+                         "host":  "127.0.0.1",
+                         "port":  9000,
+                         "reconnect_max":  3,
+                         "realtime_timeout_s":  5,
+                         "display_name":  "ACC Personal Race Assistant",
+                         "connection_password":  "asd",
+                         "command_password":  "",
+                         "update_interval_ms":  250
+                     }
+}
