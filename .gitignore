@@ -14,3 +14,8 @@ logs/
 docs/*.tmp
 teshis_graphics.py
 sira_kontrol.py
+
+# Gereksiz dosyalar
+config/settings.json.bak5
+modules/acc/Yeni Metin Belgesi*.txt
+*.bak5
