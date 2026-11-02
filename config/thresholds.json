@@ -1,0 +1,81 @@
+{
+    "_aciklama":  "Risk eÃ…Å¸ikleri. DeÃ„Å¸erler baÃ…Å¸langÃ„Â±ÃƒÂ§ tahminidir, canlÃ„Â± testte ayarlanacak.",
+    "time_to_contact":  {
+                            "_aciklama":  "Saniye. SÃƒÂ¼re bu deÃ„Å¸erin ALTINA dÃƒÂ¼Ã…Å¸erse seviye tetiklenir.",
+                            "kritik_s":  1.5,
+                            "yuksek_s":  3.0,
+                            "orta_s":  5.0,
+                            "dusuk_s":  8.0
+                        },
+    "lateral_offset":  {
+                           "_aciklama":  "Metre. AracÃ„Â±n kendi eksenine gÃƒÂ¶re yanal mesafe. ACC aracÃ„Â± yaklaÃ…Å¸Ã„Â±k 1.9 m geniÃ…Å¸liÃ„Å¸inde.",
+                           "ust_uste_binme_m":  1.0,
+                           "yan_yana_m":  2.2,
+                           "komsu_m":  4.0,
+                           "yan_yana_boyuna_m":  4.5
+                       },
+    "relative_speed":  {
+                           "_aciklama":  "km/h. Kapanma hÃ„Â±zÃ„Â± (pozitif = araÃƒÂ§lar birbirine yaklaÃ…Å¸Ã„Â±yor).",
+                           "min_kapanma_kmh":  3,
+                           "orta_kmh":  10,
+                           "yuksek_kmh":  25,
+                           "kritik_kmh":  40
+                       },
+    "izleme":  {
+                   "_aciklama":  "KomÃ…Å¸u araÃƒÂ§ seÃƒÂ§imi iÃƒÂ§in ÃƒÂ¼st sÃ„Â±nÃ„Â±r (metre).",
+                   "ilgi_mesafesi_m":  60
+               },
+    "cooldown_s":  {
+                       "_aciklama":  "AynÃ„Â± seviyedeki uyarÃ„Â± en erken bu kadar saniye sonra tekrarlanÃ„Â±r.",
+                       "kritik":  3,
+                       "yuksek":  5,
+                       "orta":  10,
+                       "dusuk":  20
+                   },
+    "event_detector":  {
+                           "etkin_olaylar":  [
+                                                 "overtake_gained",
+                                                 "overtake_lost",
+                                                 "approaching_car",
+                                                 "closing_to_car_ahead",
+                                                 "pit_entry",
+                                                 "pit_exit",
+                                                 "flag",
+                                                 "penalty"
+                                             ],
+                           "cooldown_s":  {
+                                              "overtake_gained":  3,
+                                              "overtake_lost":  3,
+                                              "approaching_car":  8,
+                                              "closing_to_car_ahead":  8,
+                                              "pit_entry":  5,
+                                              "pit_exit":  5,
+                                              "flag":  1,
+                                              "penalty":  1,
+                                              "off_track":  5,
+                                              "collision_suspect":  5,
+                                              "spin_suspect":  8
+                                          },
+                           "approaching_ttc_s":  3,
+                           "closing_ttc_s":  4,
+                           "yaklasma_max_mesafe_m":  50,
+                           "yaklasma_rearm_katsayi":  1.5,
+                           "gecis_histerezis_m":  1.5,
+                           "sira_pencere_s":  5,
+                           "off_track_tekerlek_esik":  3,
+                           "off_track_esik_ms":  800,
+                           "collision_g_esik":  3,
+                           "collision_hiz_dusus_kmh":  15,
+                           "collision_komsu_m":  6,
+                           "collision_pencere_s":  0.5,
+                           "spin_yaw_hizi_esik":  1.5,
+                           "spin_heading_derece":  60,
+                           "spin_hiz_dusus_kmh":  20,
+                           "spin_pencere_s":  1.5,
+                           "events_dosya":  "data/events.json",
+                           "max_olay":  2000,
+                           "gecis_debounce_s":  0.8,
+                           "komsu_menzil_m":  35,
+                           "gecis_cooldown_s":  10
+                       }
+}

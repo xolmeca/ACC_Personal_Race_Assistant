@@ -1,0 +1,16 @@
+﻿venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+data/events.json
+data/watch_test.log
+data/sira_kontrol.log
+logs/
+*.bak
+*.bak2
+*.bak3
+*.bak4
+docs/*.tmp
+teshis_graphics.py
+sira_kontrol.py

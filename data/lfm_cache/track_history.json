@@ -1,0 +1,19 @@
+{
+  "drivers": {
+    "76561190000000001": {
+      "monza": {
+        "ferrari_296_gt3": {
+          "avg_race_lap_ms": 105500,
+          "best_lap_ms": 104000,
+          "last_race": "2026-10-03T20:00:00Z",
+          "n_races": 3,
+          "reliable": true,
+          "trend": "iyilesiyor",
+          "trend_ms_per_race": -500.0
+        }
+      }
+    }
+  },
+  "generated_at": "2026-11-02T00:05:22Z",
+  "min_races_for_reliable": 3
+}

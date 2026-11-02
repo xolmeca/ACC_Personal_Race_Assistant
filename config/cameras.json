@@ -1,0 +1,15 @@
+{
+  "_aciklama": "Klip kamera listesi. Sıra = deneme sırası. Olaydan 20 sn geri sar, her kamera 45 sn.",
+  "geri_sar_s": 20,
+  "kamera_suresi_s": 45,
+  "cameras": [
+    {"ad": "TV1",        "etkin": true, "dosya_eki": "TV1"},
+    {"ad": "TV2",        "etkin": true, "dosya_eki": "TV2"},
+    {"ad": "Hood",       "etkin": true, "dosya_eki": "Hood"},
+    {"ad": "Chase",      "etkin": true, "dosya_eki": "Chase"},
+    {"ad": "Cockpit",    "etkin": true, "dosya_eki": "Cockpit"},
+    {"ad": "Helicopter", "etkin": true, "dosya_eki": "Helicopter"}
+  ],
+  "dogrulandi": false,
+  "_dogrulama_notu": "ACC'nin kamera seti/kamera adları (Broadcasting API) henüz doğrulanmadı. 'ad' alanları acc_replay_controller yazılırken gerçek adlarla eşlenecek."
+}
