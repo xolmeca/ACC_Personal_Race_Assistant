@@ -165,3 +165,5 @@ Karar: ana hat ACC Personal Race Assistant. Eski ACC-Auto-Director sadece mantı
 3. CrewChief benzeri uyarı katmanı. Yaklaşma uyarılarında zaman farkı = mesafe / ölçülen göreli hız (sabit hız varsayımı yok).
 4. main.py ana döngü.
 5. Gerekirse: tracker'dan 3-4 yakın aracı almak (şu an gerekli değil).
+
+GUNCELLEME (2026-11-04, Sahip ciktiyi yapistirdi): obs_websocket_client --selftest 13/13, --badtest 15/15 TAMAM; clip_naming --selftest 6/6 TAMAM (Python 3.13.7). Gercek OBS ile --canli HENUZ CALISTIRILMADI (sentetik test). SIRADAKI: recording_controller plani.
