@@ -168,3 +168,15 @@ Karar: ana hat ACC Personal Race Assistant. Eski ACC-Auto-Director sadece mantı
 
 GUNCELLEME (2026-11-04, Sahip ciktiyi yapistirdi): obs_websocket_client --selftest 13/13, --badtest 15/15 TAMAM; clip_naming --selftest 6/6 TAMAM (Python 3.13.7). Gercek OBS ile --canli HENUZ CALISTIRILMADI (sentetik test). SIRADAKI: recording_controller plani.
 GUNCELLEME 2 (2026-11-04, Sahip ciktiyi yapistirdi): modules/obs/recording_controller.py yazildi ve testli: --selftest 17/17, --badtest 12/12 TAMAM; obs_websocket_client 13/13 ve 15/15, clip_naming 6/6 TAMAM (Python 3.13.7). status 2 ve 3'te OBS'e istek gitmedigi testle dogrulandi. Gercek OBS ile HICBIR test henuz yapilmadi (--canli bekliyor). settings.json'a OBS anahtari EKLENMEDI (icerigi gorulmedi, DOGRULANMADI); kod varsayilan kullaniyor: obs.host localhost, obs.port 4455, obs.klip_klasoru data/clips. ACIK: OBS kayit formati (mkv ise dosya .mkv tasinir, sahte .mp4 adi verilmez). SIRADAKI: settings.json'a ekleme (once Get-Content config\settings.json), requirements.txt (websocket-client 1.9.2), OBS --canli testi (yaris disinda), sonra Ollama/Qwen uyari metni, risk_engine/message_engine/tts_engine, main.py.
+
+## DEVIR NOTU 2026-11-04 (OBS modulu oturumu)
+
+ONAYLANAN: OBS plani ve websocket-client (Apache-2.0, venv'de 1.9.2 kurulu). recording_controller plani onaylandi. Kayit kurali: yalnizca status 0 (AC_OFF) ve 1 (AC_REPLAY) iken kayit serbest; 2 (AC_LIVE), 3 (AC_PAUSE) ve bilinmeyen/None deger engelli.
+
+DOGRULANAN (Sahip ham cikti yapistirdi, Python 3.13.7): clip_naming 6/6 + 9/9; obs_websocket_client 13/13 + 15/15; recording_controller 17/17 + 12/12. Commit c877fdf. Gercek OBS ile HICBIR test yapilmadi.
+acc_shared_memory_reader.py: AC_LIVE = 2 (satir 28), DURUM_ADLARI {0 AC_OFF,1 AC_REPLAY,2 AC_LIVE,3 AC_PAUSE} (satir 29), graphics sozlugu "status"/"status_name" (satir 306-307), graphics_gecerli_mi(g) satir ~380. recording_controller bu sabitleri KOPYALADI (reader'i import etmez); reader degisirse elle guncelle.
+RESMI KAYNAKLA DOGRULANAN (obs-websocket 5.x): kimlik = b64(sha256(b64(sha256(sifre+salt))+challenge)); op Hello 0, Identify 1, Identified 2, Event 5, Request 6, RequestResponse 7; StopRecord->outputPath; GetRecordStatus->outputActive.
+DOGRULANMADI: requestStatus.result/code/comment alan adlari gercek OBS'e karsi; --canli (kayit baslatmaz) yaris disinda calistirilacak; StopRecord sonrasi dosya kilidi davranisi (tasima 5 deneme, 1 sn arayla).
+OBS AYARI (Sahip): kayit bicimi mkv, kodlayici NVENC H.264. Kod uzantiyi OBS dosyasindan alir (.mkv). Kanun .mp4 diyor: Sahip karari bekliyor (A: mkv kalsin + kanun guncellensin, B: OBS Hybrid MP4).
+ACIK: settings.json'a OBS anahtari EKLENMEDI (icerigi gorulmedi); kod varsayilan kullaniyor (obs.host localhost, obs.port 4455, obs.klip_klasoru data/clips). requirements.txt yok (websocket-client 1.9.2 eklenmeli). acc_event_detector engel_debounce=2 sorunu. LFM gercek JSON ornegi yok. Yurutucu (DeepSeek) gorevlerinde dosya yollari TAM verilmeli.
+SIRADAKI: settings.json'a ekleme -> requirements.txt -> OBS --canli -> Kanun bolum 5 guncelle -> Ollama/Qwen uyari metni, risk_engine/message_engine/tts_engine, main.py.
