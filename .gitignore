@@ -23,3 +23,7 @@ modules/acc/Yeni Metin Belgesi*.txt
 *.yedek*
 diag_bc.py
 ACC-Auto-Director/
+
+data/lfm_cache/
+data/clips/
+data/events/
