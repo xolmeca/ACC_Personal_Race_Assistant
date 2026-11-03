@@ -3,7 +3,9 @@ config/cameras.json
 config/settings.json
 config/thresholds.json
 docs/CREDITS.md
-docs/KALDI─ŞIMIZ_YER.md
+docs/KALDIĞIMIZ_YER.md
+docs/PROJE_KANUNU.md
+docs/REPO_AGACI.txt
 docs/claude_devir.md
 docs/proje_notlari.txt
 modules/__init__.py
