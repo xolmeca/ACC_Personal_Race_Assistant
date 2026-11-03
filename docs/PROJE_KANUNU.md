@@ -44,7 +44,7 @@ ACC_Personal_Race_Assistant/
 ├── reports/  logs/  docs/  main.py  requirements.txt
 ```
 
-Ağaçta olmayan dosya/klasör Yönetici onayı olmadan eklenmez. Python 3.13.7 (sistemde 3.15 de kurulu: testler MUTLAKA `(venv)` etkinken, `python --version` = 3.13.7 iken çalıştırılır),
+Ağaçta olmayan dosya/klasör Yönetici onayı olmadan eklenmez. MUAF: docs/ altındaki belge dosyaları ve modules/*/__init__.py. Python 3.13.7 (sistemde 3.15 de kurulu: testler MUTLAKA `(venv)` etkinken, `python --version` = 3.13.7 iken çalıştırılır),
 proje yolu `C:\Users\User\Documents\ACC_Personal_Race_Assistant`. Yeni kütüphane eklemek onay ister.
 
 **Ana tasarım kararları:** Elo yedek sinyaldir, pist bazlı pace asıl sinyaldir. Geçiş olasılığı
