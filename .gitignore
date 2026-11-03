@@ -19,3 +19,7 @@ sira_kontrol.py
 config/settings.json.bak5
 modules/acc/Yeni Metin Belgesi*.txt
 *.bak5
+
+*.yedek*
+diag_bc.py
+ACC-Auto-Director/

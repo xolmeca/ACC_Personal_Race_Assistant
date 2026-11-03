@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 modules/acc/acc_broadcasting_client.py
 
@@ -324,8 +324,8 @@ class Cozumleyici:
     'B' = paket sonunda). Hafizadan yazildigi icin iki yerlesim denenir, skorla secilir."""
 
     def __init__(self) -> None:
-        self.car_layout = "A"
-        self.layout_kilitli = False
+        self._son_spline = {}
+        self._spline_ret = {}
 
     def parse(self, data: Any) -> Tuple[int, Any]:
         if not isinstance(data, (bytes, bytearray, memoryview)):
@@ -402,34 +402,28 @@ class Cozumleyici:
         wx, wy, yaw = r.f32(), r.f32(), r.f32()
         loc, kmh = r.u8(), r.u16()
         pos, cup, tp = r.u16(), r.u16(), r.u16()
-        bas = r.p
-        diger = "B" if self.car_layout == "A" else "A"
-        adaylar = []
-        for layout in (self.car_layout, diger):
-            rr = _Okuyucu(r.b, bas)
-            try:
-                laps = rr.u16() if layout == "A" else 0
-                spline, delta = rr.f32(), rr.i32()
-                best, last, cur = _lap_oku(rr), _lap_oku(rr), _lap_oku(rr)
-                if layout == "B":
-                    laps = rr.u16()
-            except ProtocolError:
-                continue
-            if not (math.isfinite(spline) and -0.001 <= spline <= 1.001):
-                continue
-            skor = 2 + (2 if rr.kalan() == 0 else 0) + (1 if abs(delta) <= 600000 else 0)
-            if all(l.sure_ms is None or 0 < l.sure_ms <= 3600000 for l in (best, last, cur)):
-                skor += 1
-            adaylar.append((skor, 1 if layout == self.car_layout else 0, layout, laps, spline, delta,
-                            best, last, cur))
-        if not adaylar:
-            raise ProtocolError("car update ayristirilamadi")
-        adaylar.sort(key=lambda x: (x[0], x[1]), reverse=True)
-        skor, _, layout, laps, spline, delta, best, last, cur = adaylar[0]
-        if skor < 5:
-            raise ProtocolError(f"car update guven dusuk (skor={skor})")
-        if skor >= 6 and not self.layout_kilitli:
-            self.car_layout, self.layout_kilitli = layout, True
+        spline, laps, delta = r.f32(), r.u16(), r.i32()
+        best, last, cur = _lap_oku(r), _lap_oku(r), _lap_oku(r)
+        if r.kalan() != 0:
+            raise ProtocolError(f"car update bayt uyusmazligi (kalan={r.kalan()})")
+        if not math.isfinite(spline) or not (0.0 <= spline <= 1.0) or (spline != 0.0 and spline < 1e-6):
+            raise ProtocolError(f"spline gecersiz: {spline!r}")
+        if abs(delta) > 600000 or laps > 500:
+            raise ProtocolError(f"delta/laps makul degil: {delta}/{laps}")
+        for l in (best, last, cur):
+            if l.sure_ms is not None and not (0 < l.sure_ms <= 3600000):
+                raise ProtocolError(f"lap suresi makul degil: {l.sure_ms}")
+        onceki = self._son_spline.get(car_id)
+        if onceki is not None:
+            fark = (spline - onceki) % 1.0
+            if not (fark < 0.2 or fark > 0.995):
+                self._spline_ret[car_id] = self._spline_ret.get(car_id, 0) + 1
+                if self._spline_ret[car_id] >= 10:
+                    self._son_spline.pop(car_id, None)
+                    self._spline_ret[car_id] = 0
+                raise ProtocolError(f"spline atlama {onceki:.4f}->{spline:.4f}")
+        self._son_spline[car_id] = spline
+        self._spline_ret[car_id] = 0
         return CarUpdate(car_id=car_id, driver_index=drv, driver_count=dcnt, gear=gear, world_x=wx,
                          world_y=wy, yaw=yaw, car_location=loc, location_name=LOKASYON.get(loc, f"LOC_{loc}"),
                          speed_kmh=kmh, position=pos, cup_position=cup, track_position=tp, spline=spline,
@@ -820,7 +814,7 @@ def izle(sure_s: float) -> int:
         print("Kesildi.")
     finally:
         cl.stop()
-    print("ISTATISTIK:", cl.istatistik, "| layout:", cl._coz.car_layout, "| son_hata:", cl.son_hata or "-")
+    print("ISTATISTIK:", cl.istatistik, "| son_hata:", cl.son_hata or "-")
     if cl.istatistik["car_update"] == 0 and cl.istatistik["bozuk"] > 0:
         print("UYARI: car update hic ayristirilamadi; paket yerlesimi dogrulanmali.")
     return 0
@@ -852,13 +846,10 @@ def _p_kayit_sonucu(conn: int, ok: bool, ro: bool, hata: str = "") -> bytes:
     return struct.pack("<BiBB", 1, conn, 1 if ok else 0, 0 if ro else 1) + _ps(hata)
 
 
-def _p_car(car_id: int, pos: int, spline: float, layout: str = "A", loc: int = 1, laps: int = 3,
+def _p_car(car_id: int, pos: int, spline: float, loc: int = 1, laps: int = 3,
            trackpos: int = 1, drv: int = 0, kmh: int = 150) -> bytes:
     head = struct.pack("<BHHBBfffBHHHH", 3, car_id, drv, 1, 5, 10.0, 20.0, 0.5, loc, kmh, pos, pos, trackpos)
-    mid = struct.pack("<fi", spline, 250) + _pl(cid=car_id) + _pl(cid=car_id) + _pl(cid=car_id)
-    if layout == "A":
-        return head + struct.pack("<H", laps) + mid
-    return head + mid + struct.pack("<H", laps)
+    return head + struct.pack("<fHi", spline, laps, 250) + _pl(cid=car_id) + _pl(cid=car_id) + _pl(cid=car_id)
 
 
 def _p_entry_car(car_id: int, model: int, team: str, no: int, suruculer: List[Tuple[str, str, str]]) -> bytes:
@@ -987,13 +978,11 @@ def selftest() -> int:
     c("2 oturum guncelleme", tip == 2 and o.odak_arac_id == 4 and o.faz_adi == "SESSION"
       and o.session_tipi_adi == "RACE" and o.kamera == "Chase", o)
 
-    for layout in ("A", "B"):
-        coz = Cozumleyici()
-        tip, cu = coz.parse(_p_car(5, 9, 0.4321, layout=layout, laps=3, kmh=187, trackpos=4))
-        c(f"3 car update layout {layout}: alanlar", tip == 3 and cu.car_id == 5 and cu.position == 9
-          and abs(cu.spline - 0.4321) < 1e-4 and cu.laps == 3 and cu.speed_kmh == 187 and cu.delta_ms == 250
-          and cu.last_lap and cu.last_lap.sure_ms == 123456 and cu.gear == 3, cu)
-        c(f"3 car update layout {layout}: yerlesim otomatik secildi", coz.car_layout == layout, coz.car_layout)
+    coz = Cozumleyici()
+    tip, cu = coz.parse(_p_car(5, 9, 0.4321, laps=3, kmh=187, trackpos=4))
+    c("3 car update: alanlar", tip == 3 and cu.car_id == 5 and cu.position == 9
+      and abs(cu.spline - 0.4321) < 1e-4 and cu.laps == 3 and cu.speed_kmh == 187 and cu.delta_ms == 250
+      and cu.last_lap and cu.last_lap.sure_ms == 123456 and cu.gear == 3, cu)
     _, cu = parse_paket(_p_car(5, 9, 0.2, loc=2))
     c("3 pit: is_in_pit/is_in_pit_lane", cu.is_in_pit and cu.is_in_pit_lane and cu.location_name == "PITLANE")
     _, cu = parse_paket(_p_car(5, 9, 0.2, loc=3))

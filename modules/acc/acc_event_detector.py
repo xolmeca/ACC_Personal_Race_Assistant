@@ -39,7 +39,7 @@ TUM_OLAYLAR = (
 )
 
 FLAG_ADLARI = {0: "NO_FLAG", 1: "BLUE", 2: "YELLOW", 3: "BLACK",
-               4: "WHITE", 5: "CHECKERED", 6: "PENALTY", 7: "BILINMIYOR"}
+               4: "WHITE", 5: "CHECKERED", 6: "PENALTY", 7: "GREEN", 8: "ORANGE"}
 
 TARAF_ZAMAN_ASIMI_S = 3.0
 G_MS2 = 9.81
@@ -307,8 +307,25 @@ class CrossingGate:
         self.stats["olay_uretildi"] += 1
         return "overtake_gained" if old > 0 else "overtake_lost"
 
-    def prune(self, t: float, max_age: float) -> None:
-        self._st = {c: s for c, s in self._st.items() if 0 <= t - s["seen"] <= max_age}
+    def prune(self, t: float, max_age: float) -> List[Tuple[Any, str]]:
+        out: List[Tuple[Any, str]] = []
+        for c, s in list(self._st.items()):
+            age = t - s["seen"]
+            if 0 <= age <= max_age:
+                continue
+            del self._st[c]
+            if age < 0 or not s["counted"] or s["flip"] is None or s["expired"]:
+                continue
+            if s["seen"] - s["flip"] > self.window:
+                continue
+            self.stats["prune_onay"] = self.stats.get("prune_onay", 0) + 1
+            if t - self._last_event.get(c, -1e9) < self.cooldown:
+                self.stats["engel_cooldown"] += 1
+                continue
+            self._last_event[c] = t
+            self.stats["olay_uretildi"] += 1
+            out.append((c, "overtake_gained" if s["side"] > 0 else "overtake_lost"))
+        return out
 
     def stats_line(self) -> str:
         return " | ".join(f"{k}={v}" for k, v in self.stats.items())
@@ -490,7 +507,8 @@ class OlayDedektoru:
                            {"sira": d.sira, "boyuna_m": round(boy, 1)},
                            "yuksek" if k.guven == "yuksek" else "orta",
                            t, cid, olaylar)
-        self._gate.prune(t, TARAF_ZAMAN_ASIMI_S)
+        for cid2, tip2 in self._gate.prune(t, TARAF_ZAMAN_ASIMI_S):
+            self._uret(tip2, "orta", cid2, {"sira": d.sira}, "orta", t, cid2, olaylar)
 
     def _yaklasma_isle(self, d: Any, t: float, olaylar: List[Olay]) -> None:
         kurallar = (("approaching_car", d.arka, "approaching_ttc_s"),

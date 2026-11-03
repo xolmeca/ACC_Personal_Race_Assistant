@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 modules/acc/acc_shared_memory_reader.py
 
@@ -30,7 +30,7 @@ DURUM_ADLARI = {0: "AC_OFF", 1: "AC_REPLAY", 2: "AC_LIVE", 3: "AC_PAUSE"}
 OTURUM_ADLARI = {-1: "UNKNOWN", 0: "PRACTICE", 1: "QUALIFY", 2: "RACE", 3: "HOTLAP",
                  4: "TIME_ATTACK", 5: "DRIFT", 6: "DRAG", 7: "HOTSTINT", 8: "HOTSTINTSUPERPOLE"}
 BAYRAK_ADLARI = {0: "NO_FLAG", 1: "BLUE", 2: "YELLOW", 3: "BLACK", 4: "WHITE",
-                 5: "CHECKERED", 6: "PENALTY"}
+                 5: "CHECKERED", 6: "PENALTY", 7: "GREEN", 8: "ORANGE"}
 
 DOGRULANMADI = {
     "physics.tyre_dirty_level": "SDK'da var ama ACC'de kullanilmiyor olabilir (genelde 0).",
