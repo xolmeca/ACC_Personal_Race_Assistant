@@ -37,3 +37,8 @@ test_result.txt
 deneme14.txt
 qwen14b-agent.mf
 test_result.txt
+
+# test loglari ve ekran goruntuleri
+*_log.txt
+ekran_yaris/
+ekran_goruntuleri/

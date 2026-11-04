@@ -4,27 +4,32 @@ Proje yolu: C:\Users\User\Documents\ACC_Personal_Race_Assistant
 Ayrinti: docs\claude_devir.md (uzun gecmis), docs\PROJE_KANUNU.md (kurallar)
 
 ## Biten
-- OBS modulu gercek OBS ile dogrulandi (kayit mkv, tasima yeniden deneme gerekli).
-- Testler temiz: broadcasting 35 kontrol, event_detector, player_tracker, obs.
-- PistBilgisi (kamera_setleri, hud_sayfalari) gercek ACC ile dogrulandi (Spa benzeri 5552 m).
-- acc_replay_controller v1: instant_replay_paketi + replay_gonder, selftest 9 kontrol TAMAM.
-- YAMA: acc_broadcasting_client _oturum, cs/cam sonrasi HUD stringi (_hud) okunuyor. Gercek ACC'de replay=False, hava_c 23, pist_c 30 gelince dogrulandi; selftest 35 TAMAM.
-- replay_deneme.py ve replay_test_240.py (240 sn otomatik izleme) yazildi.
-- GitHub Jackhod/ACCDirectorAssistant incelendi: C# WPF canli yonetmen, bize yarar kod yok.
+- OBS, broadcasting, event_detector, player_tracker testleri temiz (broadcasting selftest 35).
+- Ayristirici yamasi: _oturum'da HUD stringi (_hud) okunuyor; replay/hava_c artik dogru geliyor.
+- Kamera (tip 50) ve HUD (tip 49) komutlari gercek ACC'de KABUL edildi (komut_testi.py 3/3).
+- REPLAY CALISTI: zamanli RACE oturumunda replay=True, kamera Set1_Cam* oldu (replay_yaris.py).
+- startSessionTime birimi MS: baslangic 23.5 -> yarisin en basi, 21085 -> yaris ici (2 goruntu).
+- acc_replay_controller: parametre baslangic_ms, selftest 9/9. replay_yaris.py <yaris_no> yazildi.
+- Test betikleri: replay_oto, replay_ss (pillow gerekli), replay_yaris, komut_testi (bip + log, komut satirina donmeden).
 
 ## Kararlar
 - Yarista LLM yok. Proje yaris sonrasi odakli (olay kaydi, klip, rapor, pace).
 - risk/message/tts engine askida. ACC-Auto-Director ve pydub kalsin.
-- Kod ortami: VS Code + Continue + Ollama qwen2.5-coder 14b; zor kararlar Claude sohbetinde (ucretsiz plan, Claude Code yok).
+- Kod ortami: VS Code + Continue + Ollama qwen2.5-coder 14b; zor kararlar Claude sohbetinde (ucretsiz plan).
 - Calisma bicimi: az token, tek adim, tek PowerShell komutu; gormedigin dosyaya yama yazma.
+- LFM'de yaris numarasi (kapi no) HER YARISTA DEGISIR; sabit yazma, arguman al (bu yaris 966).
+- Betikler ACC'ye gecildiginde komut satirina donmeden calismali: bip ile haber, sonuc log dosyasinda.
 
 ## Simdi
-- ACC'de garajdan cik, pistte dur/yavas sur. python replay_test_240.py (odak arac id yeniden okunur, baslangic ms: 0/5000/30000/120000).
-- Tum ciktiyi + ACC ekraninda replay olup olmadigini yapistir.
+- Zamanli yarista: python replay_yaris.py <yaris_no> (menude de calisabilir, tek gozlem).
+- Log'da "yaris no X -> carId Y" ara; replay kamerasi KENDI aracina kilitlendi mi yaz.
+- Sonra replay'i olay/klip akisina bagla (event_detector -> replay_gonder, baslangic = olay zamani - pay).
 
 ## Acik / dogrulanmayan
-- REPLAY BASLAMADI: garajda, arac listesi bos, odak=-1, baslangic ham sn (0/5/30) ile 4 gonderim denendi. Pistte + ms testi bekliyor.
-- InstantReplayRequest: tip 51, alan sirasi/turleri, odak araci int32, startSessionTime birimi (ms olabilir), yaris sonrasi replay.
-- session_zamani_ms hep -1; gun_saati_ms degeri saniye cinsi gorunuyor (alan adi yaniltici).
+- find_by_race_number yamasi VERILDI ama sonucu dogrulanmadi; odak_arac_id oyuncu araci DEGIL (hep 23).
+- Antrenmanda session_zamani_ms=-1 ve replay baslamadi; sadece zamanli oturumda denendi/calisti.
+- Garajda arac listesi bos geliyor; araclar pistteyken doluyor.
+- startSessionTime ms: 2 goruntuye dayanir; replay suresi/kamera secimi, yaris sonrasi replay denenmedi.
 - Salt okunur kayitta komut reddedilir; command_password ACC ile ayni olmali.
 - acc_event_detector engel_debounce=2, LFM gercek JSON ornegi.
+- GitHub: ACCDirectorAssistant (C# canli yonetmen) yaramadi; EmperorCookie/accapi README: request_instant_replay(startTime, durationMs), kaynak okunamadi.

@@ -2,7 +2,7 @@
 
 DOGRULANMADI (gercek ACC ile test edilene kadar):
 - alan sirasi/turleri (tip 51, conn int32, baslangic f32, sure f32, odak int32, 2 string)
-- startSessionTime birimi (saniye varsayildi)
+- startSessionTime birimi: ms (zamanli yarista goruntuyle destekleniyor, 2026-11-05)
 - yaris sonrasi replay davranisi
 - komut sifresi olmadan (salt okunur kayit) komut reddedilir; burada kontrol YOK
 Tus gonderimi yok. Yarista LLM yok.
@@ -17,25 +17,25 @@ from modules.acc.acc_broadcasting_client import _ps
 OUT_INSTANT_REPLAY = 51  # DOGRULANMADI
 
 
-def instant_replay_paketi(conn_id: int, baslangic_s: float, sure_ms: float,
+def instant_replay_paketi(conn_id: int, baslangic_ms: float, sure_ms: float,
                           odak_arac: int = -1, kamera_seti: str = "",
                           kamera: str = "") -> bytes:
     if sure_ms <= 0:
         raise ValueError("sure_ms > 0 olmali")
-    if baslangic_s < 0:
-        raise ValueError("baslangic_s >= 0 olmali")
+    if baslangic_ms < 0:
+        raise ValueError("baslangic_ms >= 0 olmali")
     return (struct.pack("<Bi", OUT_INSTANT_REPLAY, int(conn_id))
-            + struct.pack("<ffi", float(baslangic_s), float(sure_ms), int(odak_arac))
+            + struct.pack("<ffi", float(baslangic_ms), float(sure_ms), int(odak_arac))
             + _ps(kamera_seti) + _ps(kamera))
 
 
-def replay_gonder(client, baslangic_s: float, sure_ms: float, odak_arac: int = -1,
+def replay_gonder(client, baslangic_ms: float, sure_ms: float, odak_arac: int = -1,
                   kamera_seti: str = "", kamera: str = "") -> bool:
     """Bagli istemci uzerinden gonderir. Baglanti yoksa False doner."""
     conn = getattr(client, "_conn_id", None)
     if conn is None or not getattr(client, "baglandi", False):
         return False
-    pkt = instant_replay_paketi(conn, baslangic_s, sure_ms, odak_arac, kamera_seti, kamera)
+    pkt = instant_replay_paketi(conn, baslangic_ms, sure_ms, odak_arac, kamera_seti, kamera)
     return bool(client._gonder(pkt))
 
 
