@@ -382,6 +382,7 @@ class Cozumleyici:
         ev, si, st, ph = r.u16(), r.u16(), r.u8(), r.u8()
         stime, send, odak = r.f32(), r.f32(), r.i32()
         cs, cam = r.string(), r.string()
+        _hud = r.string()  # CurrentHudPage (DOGRULANMADI)
         replay = r.u8() > 0
         if replay:
             r.f32()
