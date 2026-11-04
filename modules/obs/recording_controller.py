@@ -10,10 +10,10 @@ import time
 
 try:
     from modules.obs.clip_naming import klip_dosya_adi, proje_klasor_adi
-    from modules.obs.obs_websocket_client import ObsHata
+    from modules.obs.obs_websocket_client import ObsHata, ObsIstemci, env_dosyasindan
 except ImportError:
     from clip_naming import klip_dosya_adi, proje_klasor_adi
-    from obs_websocket_client import ObsHata
+    from obs_websocket_client import ObsHata, ObsIstemci, env_dosyasindan
 
 # acc_shared_memory_reader.py satir 29 ile ayni (kopya: bagimlilik olmasin diye)
 DURUM_ADLARI = {0: "AC_OFF", 1: "AC_REPLAY", 2: "AC_LIVE", 3: "AC_PAUSE"}
@@ -239,9 +239,70 @@ def _badtest():
     return all(sonuc)
 
 
+def _canli(argv):
+    """GERCEK OBS: ~3 sn kayit + tasima. Yaris disinda, ACC kapaliyken. Gecici klasore tasir, sonra siler."""
+    kok = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    try:
+        status = int(argv[argv.index("--status") + 1])
+    except (ValueError, IndexError):
+        print("Kullanim: python -m modules.obs.recording_controller --canli --status 0")
+        return False
+    izin, sebep = kayit_izinli_mi(status)
+    if not izin:
+        print("ENGELLENDI:", sebep)
+        return False
+    obs = ObsIstemci(sifre=env_dosyasindan(os.path.join(kok, ".env"), "OBS_WS_PASSWORD") or "")
+    gecici = tempfile.mkdtemp(prefix="acc_canli_")
+    log = []
+
+    def sayacli_tasi(a, b):
+        try:
+            shutil.move(a, b)
+            log.append("OK")
+        except OSError as e:
+            log.append(f"HATA: {e}")
+            raise
+
+    try:
+        obs.baglan()
+        if obs.kayit_aktif_mi():
+            print("OBS zaten kayit yapiyor; test iptal edildi")
+            return False
+        kc = KayitKontrolcu(obs, gecici, tasima_deneme=10, bekleme_sn=1.0, tasi=sayacli_tasi)
+        ok, msg = kc.kayit_baslat(status)
+        print("baslat:", ok, msg)
+        if not ok:
+            return False
+        time.sleep(1.0)
+        print("kayit aktif mi (baslattiktan sonra):", obs.kayit_aktif_mi())
+        time.sleep(2.0)
+        t0 = time.time()
+        ok, bilgi = kc.kayit_durdur_ve_tasi(9999, 1, "TEST")
+        print("durdur+tasi:", ok, bilgi)
+        print(f"sure: {time.time() - t0:.1f} sn | tasima denemeleri: {log}")
+        if not ok:
+            return False
+        boyut = os.path.getsize(bilgi)
+        print("dosya boyutu (bayt):", boyut, "| uzanti:", os.path.splitext(bilgi)[1])
+        return boyut > 0
+    except ObsHata as e:
+        print("OBS HATASI:", e)
+        return False
+    finally:
+        try:
+            if obs.kayit_aktif_mi():
+                print("UYARI: kayit acik kalmisti, durduruldu:", obs.kayit_durdur())
+        except Exception:
+            pass
+        obs.kapat()
+        shutil.rmtree(gecici, ignore_errors=True)
+
+
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(0 if _selftest() else 1)
     if "--badtest" in sys.argv:
         sys.exit(0 if _badtest() else 1)
-    print("Kullanim: python modules\\obs\\recording_controller.py --selftest | --badtest")
+    if "--canli" in sys.argv:
+        sys.exit(0 if _canli(sys.argv) else 1)
+    print("Kullanim: python -m modules.obs.recording_controller --selftest | --badtest | --canli --status 0")
