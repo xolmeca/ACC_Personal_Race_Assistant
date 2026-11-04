@@ -10,7 +10,7 @@ Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md
 - REPLAY calisti: sadece ZAMANLI RACE oturumunda, antrenmanda calismadi. startSessionTime = MS (kesin).
 - acc_replay_controller baslangic_ms selftest 9/9. Isimle arac bulma find_by_driver_name test 12/12.
 - replay_yaris.py "Hakan Aksen" | <yaris_no> | hedefsiz. Isimle kisim gercek ACC'de DENENMEDI.
-- LFM dosyalari (eski programdan): lfm_lobby_cache, lfm_profile_cache, lfm_track_history, __init__ -> modules\lfm\ (kopyalama+selftest komutu verildi, SONUCU BILINMIYOR).
+- LFM modulleri modules\lfm altinda, 3 modul SELFTEST TAMAM (2026-11-05).
 
 ## Kararlar
 - Yarista LLM yok; proje yaris sonrasi odakli (olay kaydi, klip, rapor, pace). risk/message/tts askida.
@@ -19,7 +19,7 @@ Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md
 - Calisma bicimi: kisa, tek adim, tek PowerShell komutu; gormedigin dosyaya yama yazma; betikler bip+log ile komut satirina donmeden calisir.
 
 ## Simdi
-- 1) modules\lfm kopyalama+selftest sonucunu dogrula (3 modul SELFTEST TAMAM).
+- 1) (BITTI) lfm selftest 3/3 gecti.
 - 2) Zamanli yarista: python replay_yaris.py "Hakan Aksen"; log'da hedef -> carId; kamera kendi aracina kilitlendi mi.
 - 3) LFM gercek uc nokta (url), .env LFM_API_TOKEN, settings.json lfm bolumu: kullanicidan al, tek lobiyle dene.
 - 4) Sonra: lobi Elo'dan hedef sira ozelligi; replay'i olay/klip akisina bagla (OBS veya eski ffmpeg_ekran_kaydedici 10sn once/20sn sonra).
