@@ -233,6 +233,9 @@ class PistBilgisi:
     ad: str
     pist_id: int
     uzunluk_m: int
+    kamera_setleri: Optional[Dict[str, List[str]]] = None
+    hud_sayfalari: Optional[List[str]] = None
+    ham: bytes = b""
 
 
 @dataclass
@@ -351,7 +354,19 @@ class Cozumleyici:
             r.i32()
             ad = r.string()
             pid = r.i32()
-            return tip, PistBilgisi(ad, pid, r.i32())
+            metre = r.i32()
+            sets = None
+            huds = None
+            try:
+                if r.kalan() > 0:
+                    sets = {}
+                    for _ in range(r.u8()):
+                        sn = r.string()
+                        sets[sn] = [r.string() for _ in range(r.u8())]
+                    huds = [r.string() for _ in range(r.u8())]
+            except Exception:
+                sets, huds = None, None
+            return tip, PistBilgisi(ad, pid, metre, sets, huds, bytes(data))
         if tip == IN_ENTRY_CAR:
             return tip, self._giris(r)
         if tip == IN_OLAY:
@@ -868,8 +883,12 @@ def _p_oturum(odak: int = 2, faz: int = 5) -> bytes:
             + struct.pack("<B", 0) + struct.pack("<fBBBBB", 50000.0, 22, 30, 0, 0, 0) + _pl())
 
 
-def _p_pist(ad: str = "Monza", pid: int = 5, metre: int = 5000) -> bytes:
-    return struct.pack("<Bi", 5, 7) + _ps(ad) + struct.pack("<iiBB", pid, metre, 0, 0)
+def _p_pist(ad: str = "Monza", pid: int = 5, metre: int = 5000, sets: Optional[Dict[str, List[str]]] = None, huds: Optional[List[str]] = None) -> bytes:
+    sets, huds = sets or {}, huds or []
+    b = struct.pack("<Bi", 5, 7) + _ps(ad) + struct.pack("<iiB", pid, metre, len(sets))
+    for sn, cams in sets.items():
+        b += _ps(sn) + struct.pack("<B", len(cams)) + b"".join(_ps(x) for x in cams)
+    return b + struct.pack("<B", len(huds)) + b"".join(_ps(x) for x in huds)
 
 
 def _p_olay(tip: int, mesaj: str, ms: int, car: int) -> bytes:
@@ -977,6 +996,16 @@ def selftest() -> int:
     tip, o = parse_paket(_p_oturum(odak=4, faz=5))
     c("2 oturum guncelleme", tip == 2 and o.odak_arac_id == 4 and o.faz_adi == "SESSION"
       and o.session_tipi_adi == "RACE" and o.kamera == "Chase", o)
+
+    coz2 = Cozumleyici()
+    sets_t = {"Drivable": ["Chase", "Onboard0"], "Pits": ["Pit1"]}
+    tip, p = coz2.parse(_p_pist("Spa", 3, 7004, sets_t, ["Basic HUD", "Help"]))
+    c("5 pist: kamera setleri ve HUD", tip == 5 and p.uzunluk_m == 7004 and p.kamera_setleri == sets_t
+      and p.hud_sayfalari == ["Basic HUD", "Help"] and isinstance(p.ham, bytes) and len(p.ham) > 0, p)
+    tip, p = coz2.parse(_p_pist())
+    c("5 pist: bos kamera listesi", p.kamera_setleri == {} and p.hud_sayfalari == [] and p.uzunluk_m == 5000, p)
+    tip, p = coz2.parse(_p_pist("Spa", 3, 7004, sets_t, ["H"])[:-2])
+    c("5 pist: kesik veri -> None, cokmez", p.kamera_setleri is None and p.hud_sayfalari is None and p.uzunluk_m == 7004, p)
 
     coz = Cozumleyici()
     tip, cu = coz.parse(_p_car(5, 9, 0.4321, laps=3, kmh=187, trackpos=4))
