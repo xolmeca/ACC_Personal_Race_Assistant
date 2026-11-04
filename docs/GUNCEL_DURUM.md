@@ -1,36 +1,37 @@
 ﻿# GUNCEL DURUM (her gorev sonunda guncellenir, en fazla 40 satir)
-Tarih: 2026-11-05
+Tarih: 2026-11-05 (baska Claude hesabina devir icin guncellendi)
 Proje yolu: C:\Users\User\Documents\ACC_Personal_Race_Assistant
-Eski proje (referans): C:\Users\User\Desktop\ACC_AUTO_DIRECTOR_FINAL\AutoDirector (harita icin harita_cikar.py)
-Ayrinti: docs\claude_devir.md (uzun gecmis), docs\PROJE_KANUNU.md (kurallar)
+Eski proje (referans, sadece oku): C:\Users\User\Desktop\ACC_AUTO_DIRECTOR_FINAL\AutoDirector
+Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md
 
 ## Biten
-- OBS, broadcasting, event_detector, player_tracker testleri temiz (broadcasting selftest 35).
-- Ayristirici yamasi: _oturum'da HUD stringi (_hud); replay/hava_c dogru geliyor.
-- Kamera (50) ve HUD (49) komutlari gercek ACC'de KABUL edildi.
-- REPLAY CALISTI zamanli RACE oturumunda (replay=True, kamera Set1_Cam*). Antrenmanda calismadi.
-- startSessionTime = MS: 2 goruntu + eski proje kodu (instant_replay ms int, baslangic = olay zamani - pay).
-- acc_replay_controller: baslangic_ms, selftest 9/9.
-- ISIMLE ARAC BULMA: find_by_driver_name / find_all_by_driver_name (sira, buyuk-kucuk, Turkce harf yok sayilir, TEK eslesme sart). Test 12/12.
-- replay_yaris.py yeniden yazildi: "python replay_yaris.py "Hakan Aksen"" veya yaris no veya hedefsiz.
+- OBS/broadcasting/event_detector/player_tracker testleri temiz (broadcasting selftest 35).
+- Oturum ayristirici yamasi (_hud); kamera(50)/HUD(49) komutlari gercek ACC'de calisti.
+- REPLAY calisti: sadece ZAMANLI RACE oturumunda, antrenmanda calismadi. startSessionTime = MS (kesin).
+- acc_replay_controller baslangic_ms selftest 9/9. Isimle arac bulma find_by_driver_name test 12/12.
+- replay_yaris.py "Hakan Aksen" | <yaris_no> | hedefsiz. Isimle kisim gercek ACC'de DENENMEDI.
+- LFM dosyalari (eski programdan): lfm_lobby_cache, lfm_profile_cache, lfm_track_history, __init__ -> modules\lfm\ (kopyalama+selftest komutu verildi, SONUCU BILINMIYOR).
 
 ## Kararlar
-- Yarista LLM yok. Proje yaris sonrasi odakli (olay kaydi, klip, rapor, pace).
-- risk/message/tts askida. ACC-Auto-Director ve pydub kalsin.
-- Kod ortami: VS Code + Continue + Ollama; zor kararlar Claude sohbetinde (ucretsiz plan).
-- Calisma bicimi: az token, tek adim, tek PowerShell komutu; gormedigin dosyaya yama yazma.
-- LFM'de kapi numarasi her yarista DEGISIR: oyuncu araci ISIMDEN bulunur (Hakan Aksen / Aksen Hakan), numaradan degil.
-- Betikler komut satirina donmeden calismali: bip + log dosyasi. Gecici dosyalar git'e girmez.
+- Yarista LLM yok; proje yaris sonrasi odakli (olay kaydi, klip, rapor, pace). risk/message/tts askida.
+- Oyuncu araci ISIMDEN bulunur (LFM'de kapi no her yaris degisir). Sahip: Hakan Aksen.
+- Kod: VS Code+Continue+Ollama; zor kararlar Claude sohbetinde (ucretsiz plan, Claude Code yok, token az).
+- Calisma bicimi: kisa, tek adim, tek PowerShell komutu; gormedigin dosyaya yama yazma; betikler bip+log ile komut satirina donmeden calisir.
 
 ## Simdi
-- Zamanli yarista: python replay_yaris.py "Hakan Aksen". Log'da: hedef 'Hakan Aksen' -> carId N; kamera kendi aracina kilitlendi mi?
-- UYARI cikarsa log'daki "roster ornegi" satirini yapistir (ACC ismi hangi bicimde gosteriyor).
-- Sonra replay'i olay/klip akisina bagla; OBS veya eski ffmpeg_ekran_kaydedici (10 sn once/20 sn sonra klip) secimi.
+- 1) modules\lfm kopyalama+selftest sonucunu dogrula (3 modul SELFTEST TAMAM).
+- 2) Zamanli yarista: python replay_yaris.py "Hakan Aksen"; log'da hedef -> carId; kamera kendi aracina kilitlendi mi.
+- 3) LFM gercek uc nokta (url), .env LFM_API_TOKEN, settings.json lfm bolumu: kullanicidan al, tek lobiyle dene.
+- 4) Sonra: lobi Elo'dan hedef sira ozelligi; replay'i olay/klip akisina bagla (OBS veya eski ffmpeg_ekran_kaydedici 10sn once/20sn sonra).
 
 ## Acik / dogrulanmayan
-- find_by_driver_name gercek ACC'de DENENMEDI; odak_arac_id oyuncu araci DEGIL (hep 23 geldi).
-- LFM rank/Elo "kacinci olmaliyim" ozelligi: eski klasorde kod YOK (sadece PROJE_VIZYONU.md'de LFM linki); hangi programdaydi bilinmiyor.
-- Antrenmanda session_zamani_ms=-1; garajda arac listesi bos; menude replay hemen basladi (tek gozlem).
-- Eski kod kurali: kamera seti ve adi birlikte verilmeli veya ikisi de bos; controller'da bu kontrol yok.
-- Salt okunur kayitta komut reddedilir; command_password ACC ile ayni olmali.
-- acc_event_detector engel_debounce=2, LFM gercek JSON ornegi.
+- LFM uc nokta/alan adlari DOGRULANMADI; hedef sira (Elo) hesabi kodda YOK, LFM Elo formulu bilinmiyor.
+- lfm_profile_cache.py satir 178-385 incelenmedi. Lobi name ile ACC tam_ad eslesmesi LFM isim bicimine bagli.
+- Antrenmanda session_zamani_ms=-1; garajda arac listesi bos; odak_arac_id oyuncu araci DEGIL.
+- Eski kod kurali: kamera seti+adi birlikte veya ikisi bos; controller'da kontrol yok.
+- command_password ACC ile ayni olmali; engel_debounce=2; LFM gercek JSON ornegi.
+
+## Yeni hesaba notlar
+- CLAUDE.md + bu dosyayi yukle. Dosya okutmak icin PowerShell ile dosyaya yazdirip yukle (panoya degil).
+- PowerShell: parantez icinde ; yerine $( ) kullan; Python'a pipe'ta Turkce harf bozulur, \u kacislari kullan.
+- GitHub tree/arama sayfalari otomatik erisime kapali; kullanici elle kopyalar.
