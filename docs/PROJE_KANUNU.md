@@ -76,7 +76,7 @@ LLM (Ollama/Qwen) yalnızca kısa Türkçe uyarı metni üretir. Klip: olaydan 2
 | acc_player_tracker | Tamam; `--selftest` 44 kontrol TAMAM (sentetik veri) |
 | acc_broadcasting_client | Selftest 32 + badtest 25 kontrol (04.11.2026 gerçek çıktı) + canlı `--watch 120` TAMAM |
 | acc_event_detector | Yazıldı; `--selftest` 60 ve `--badtest` 55 TAMAM; canlı kaza testi yapıldı; kalan sorun: `engel_debounce=2` |
-| obs/* | Tamam: clip_naming (6+9), obs_websocket_client (13+15), recording_controller (17+12) testleri sentetik veriyle geçti (04.11.2026); gerçek OBS ile `--canli` testi HENÜZ yapılmadı |
+| obs/* | Tamam: clip_naming (6+9), obs_websocket_client (13+15), recording_controller (17+12) testleri geçti; gerçek OBS ile `--canli` bağlantı+kimlik+GetRecordStatus TAMAM (04.11.2026); StartRecord/StopRecord/taşıma gerçek OBS'te HENÜZ denenmedi |
 | Ollama/Qwen uyarı metni, risk_engine, message_engine, tts_engine, main.py | Sırada |
 | acc_replay_controller, prediction/*, lfm_elo_target, main.py, requirements.txt, reports/ | Repoda YOK (git ls-files, 03.11.2026); prediction/crewchief/obs klasörlerinde yalnızca `__init__.py` var |
 | LFM verisi | Gerçek veri henüz YOK; sahte örnek dosyalar silindi (03.11.2026). LFM sonuç/lobi/profil JSON örneği gelince alan adları güncellenecek |
