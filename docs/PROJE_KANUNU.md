@@ -188,3 +188,9 @@ Durum özeti için docs/KALDIĞIMIZ_YER.md, docs/claude_devir.md ve kanun bölü
 4. `DOGRULANMADI` işaretleri dürüst mü? Uydurma alan/ofset/uç nokta kokusu var mı?
 5. Önceki modüllerin selftestleri hâlâ geçiyor mu? `settings.json` yalnızca eklendi mi?
 6. Şüphede: Sahip'e "şu komutu çalıştır, çıktıyı getir" denir; çıktı yoksa "çalıştı" kabul edilmez.
+
+## Replay modulu notlari (2026-11-04)
+- InstantReplayRequest komut yetkisi ister (salt_okunur=False); command_password settings.json'dan gelir.
+- Replay gonderimi yalnizca yaris disi oturumda denenir; yarista komut gonderme yok.
+- Paket alanlari gercek ACC ile dogrulanana kadar DOGRULANMADI sayilir.
+- Tus gonderimi yok, yarista LLM/Ollama yok.
