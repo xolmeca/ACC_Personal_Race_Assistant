@@ -49,7 +49,7 @@ proje yolu `C:\Users\User\Documents\ACC_Personal_Race_Assistant`. Yeni kütüpha
 
 **Ana tasarım kararları:** Elo yedek sinyaldir, pist bazlı pace asıl sinyaldir. Geçiş olasılığı
 `P(1 tur)=logistic(gap+pace_delta+tyre_delta+traffic)`, `P(N tur)=1-(1-P)^N`. Hesaplama Python'da;
-LLM (Ollama/Qwen) yalnızca kısa Türkçe uyarı metni üretir. Klip: olaydan 20 sn geri sar, kameraları
+YARIŞ SIRASINDA LLM/Ollama YOK (Sahip kararı 04.11.2026: 1 sn üstü gecikme veya FPS düşüşü kabul edilmez; Ollama/Qwen uyarı metni modülü İPTAL; yarış içi anlık ses CrewChief'in işidir). Klip: olaydan 20 sn geri sar, kameraları
 (TV1/TV2/Hood/Chase/Cockpit/Helicopter) sırayla dene, kamera başına 45 sn, ad `Proje_N_Klip_M_Kamera.<uzanti>` (uzantı OBS kayıt biçiminden gelir; Sahip ayarı: mkv, NVENC H.264).
 
 ## 4. Kod standartları (her modül için)
@@ -66,6 +66,7 @@ LLM (Ollama/Qwen) yalnızca kısa Türkçe uyarı metni üretir. Klip: olaydan 2
 10. `data/lfm_cache/`, `data/clips/`, `data/events/`, `logs/`, `.env` git'e EKLENMEZ (`.gitignore`'da). Sahte/örnek veri gerçek cache'e yazılmaz, test geçici klasörde yapılır.
 11. ACC Broadcasting parolası şu an varsayılan (`asd`, yerel). Değiştirilirse değer `.env`'ye taşınır, `settings.json`'a yazılmaz.
 12. Bir modül başka modülün çıktı alan adlarını kullanıyorsa, o modül değişince bağımlı modülün `--selftest`'i de çalıştırılır (örn. reader -> player_tracker).
+13. Testler proje kökünden `python -m modules.<klasör>.<modül> --selftest` biçiminde çalıştırılır (dosya yoluyla çalıştırmak reader/lfm modüllerinde ModuleNotFoundError verir; kod hatası değildir). Dosya yolları Yürütücü'ye TAM verilir.
 
 ## 5. Güncel durum (kayıtlı notlardan; DOĞRULA)
 
@@ -77,8 +78,9 @@ LLM (Ollama/Qwen) yalnızca kısa Türkçe uyarı metni üretir. Klip: olaydan 2
 | acc_broadcasting_client | Selftest 32 + badtest 25 kontrol (04.11.2026 gerçek çıktı) + canlı `--watch 120` TAMAM |
 | acc_event_detector | Yazıldı; `--selftest` 60 ve `--badtest` 55 TAMAM; canlı kaza testi yapıldı; kalan sorun: `engel_debounce=2` |
 | obs/* | TAMAM ve gerçek OBS ile doğrulandı (04.11.2026): bağlantı, kimlik, StartRecord/StopRecord, outputPath, sürücüler arası taşıma; ilk taşıma denemesi WinError 32 verdi, yeniden deneme başarılı. Testler: clip_naming 6+9, obs_websocket_client 13+15, recording_controller 17+12 |
-| Ollama/Qwen uyarı metni, risk_engine, message_engine, tts_engine, main.py | Sırada |
-| acc_replay_controller, prediction/*, lfm_elo_target, main.py, requirements.txt, reports/ | Repoda YOK (git ls-files, 03.11.2026); prediction/crewchief/obs klasörlerinde yalnızca `__init__.py` var |
+| Ollama/Qwen uyarı metni | İPTAL (Sahip kararı, 04.11.2026) |
+| risk_engine, message_engine, tts_engine, main.py | Kapsam Sahip kararını bekliyor (yarış içi ses CrewChief'e bırakıldı); main.py sırada |
+| acc_replay_controller, prediction/*, lfm_elo_target, main.py, reports/ (requirements.txt artık VAR: yalnızca websocket-client==1.9.2) | Repoda YOK (git ls-files, 03.11.2026); prediction/crewchief/obs klasörlerinde yalnızca `__init__.py` var |
 | LFM verisi | Gerçek veri henüz YOK; sahte örnek dosyalar silindi (03.11.2026). LFM sonuç/lobi/profil JSON örneği gelince alan adları güncellenecek |
 
 **OBS ön kararları:** yalnızca yarış sonrası; ACC canlı oturumdayken (AC_LIVE) kayıt başlatma kodla engellenir;
@@ -93,6 +95,9 @@ OBS WebSocket v5 (`localhost:4455`), şifre `.env`'de `OBS_WS_PASSWORD`; `StopRe
 - Shared Memory yapıları "önek" olarak tanımlıdır; gerçek sayfadan büyük okumak başarısız olur.
 - ACC bayrakları: 0 NO, 1 BLUE, 2 YELLOW, 3 BLACK, 4 WHITE, 5 CHECKERED, 6 PENALTY, 7 GREEN, 8 ORANGE.
 - Eski ACC-Auto-Director projesi yalnızca mantık referansıdır; kod alınmaz.
+- OBS: WebSocket sunucusu OBS'te elle etkinleştirilmelidir (port 4455); kapalıyken WinError 10061 gelir.
+- OBS: `StopRecord` döndükten sonra dosya kısa süre kilitli kalır (WinError 32); taşıma yeniden denenir (gerçek testte 1. deneme hata, 2. başarılı).
+- OBS kayıt biçimi mkv (NVENC H.264), kod uzantıyı OBS dosyasından alır; `.env` (OBS_WS_PASSWORD) git'te değildir.
 
 ## 7. HAYAL GÖRME YASAĞI (Yürütücü için özellikle)
 

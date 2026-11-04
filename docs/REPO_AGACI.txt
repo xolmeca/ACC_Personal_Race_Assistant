@@ -20,4 +20,8 @@ modules/lfm/lfm_lobby_cache.py
 modules/lfm/lfm_profile_cache.py
 modules/lfm/lfm_track_history.py
 modules/obs/__init__.py
+modules/obs/clip_naming.py
+modules/obs/obs_websocket_client.py
+modules/obs/recording_controller.py
 modules/prediction/__init__.py
+requirements.txt
