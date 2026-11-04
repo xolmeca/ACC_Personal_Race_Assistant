@@ -79,7 +79,9 @@ YARIŞ SIRASINDA LLM/Ollama YOK (Sahip kararı 04.11.2026: 1 sn üstü gecikme v
 | acc_event_detector | Yazıldı; `--selftest` 60 ve `--badtest` 55 TAMAM; canlı kaza testi yapıldı; kalan sorun: `engel_debounce=2` |
 | obs/* | TAMAM ve gerçek OBS ile doğrulandı (04.11.2026): bağlantı, kimlik, StartRecord/StopRecord, outputPath, sürücüler arası taşıma; ilk taşıma denemesi WinError 32 verdi, yeniden deneme başarılı. Testler: clip_naming 6+9, obs_websocket_client 13+15, recording_controller 17+12 |
 | Ollama/Qwen uyarı metni | İPTAL (Sahip kararı, 04.11.2026) |
-| risk_engine, message_engine, tts_engine, main.py | Kapsam Sahip kararını bekliyor (yarış içi ses CrewChief'e bırakıldı); main.py sırada |
+| PROJE YÖNÜ | YARIŞ SONRASI ODAKLI (Sahip kararı): olay kaydı, klip üretimi, rapor, pist bazlı pace analizi. Yarış içi anlık ses/uyarı CrewChief'te kalır |
+| risk_engine, message_engine, tts_engine | ASKIDA (yarış içi modüller; Sahip kararıyla yarış sonrası odağa geçildi, silinmedi) |
+| main.py | Sırada (yarış sonrası akışı birleştirecek) |
 | acc_replay_controller, prediction/*, lfm_elo_target, main.py, reports/ (requirements.txt artık VAR: yalnızca websocket-client==1.9.2) | Repoda YOK (git ls-files, 03.11.2026); prediction/crewchief/obs klasörlerinde yalnızca `__init__.py` var |
 | LFM verisi | Gerçek veri henüz YOK; sahte örnek dosyalar silindi (03.11.2026). LFM sonuç/lobi/profil JSON örneği gelince alan adları güncellenecek |
 
