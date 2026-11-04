@@ -829,6 +829,13 @@ def izle(sure_s: float) -> int:
         print("Kesildi.")
     finally:
         cl.stop()
+    p = cl._pist
+    if p is None:
+        print("PIST: bilgi gelmedi (ACC pist verisini gondermedi ya da cozulemedi)")
+    else:
+        print("PIST:", p.uzunluk_m, "m | kamera_setleri:", p.kamera_setleri, "| hud:", p.hud_sayfalari, "| ham:", len(p.ham), "bayt")
+        if p.kamera_setleri is None:
+            print("PIST HAM (ilk 400 bayt):", p.ham[:400].hex())
     print("ISTATISTIK:", cl.istatistik, "| son_hata:", cl.son_hata or "-")
     if cl.istatistik["car_update"] == 0 and cl.istatistik["bozuk"] > 0:
         print("UYARI: car update hic ayristirilamadi; paket yerlesimi dogrulanmali.")
