@@ -32,3 +32,8 @@ data/events/
 deneme14.txt
 qwen14b-agent.mf
 test_result.txt
+
+.opencode/
+deneme14.txt
+qwen14b-agent.mf
+test_result.txt
