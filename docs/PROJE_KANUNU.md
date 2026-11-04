@@ -50,7 +50,7 @@ proje yolu `C:\Users\User\Documents\ACC_Personal_Race_Assistant`. Yeni kütüpha
 **Ana tasarım kararları:** Elo yedek sinyaldir, pist bazlı pace asıl sinyaldir. Geçiş olasılığı
 `P(1 tur)=logistic(gap+pace_delta+tyre_delta+traffic)`, `P(N tur)=1-(1-P)^N`. Hesaplama Python'da;
 LLM (Ollama/Qwen) yalnızca kısa Türkçe uyarı metni üretir. Klip: olaydan 20 sn geri sar, kameraları
-(TV1/TV2/Hood/Chase/Cockpit/Helicopter) sırayla dene, kamera başına 45 sn, ad `Proje_N_Klip_M_Kamera.mp4`.
+(TV1/TV2/Hood/Chase/Cockpit/Helicopter) sırayla dene, kamera başına 45 sn, ad `Proje_N_Klip_M_Kamera.<uzanti>` (uzantı OBS kayıt biçiminden gelir; Sahip ayarı: mkv, NVENC H.264).
 
 ## 4. Kod standartları (her modül için)
 
@@ -74,9 +74,9 @@ LLM (Ollama/Qwen) yalnızca kısa Türkçe uyarı metni üretir. Klip: olaydan 2
 | lfm_track_history, lfm_lobby_cache, lfm_profile_cache | Tamam, testleri geçti (LFM JSON alan adları doğrulanmadı, gerçek örnek gelince güncellenecek) |
 | acc_shared_memory_reader | Tamam; bayrak değerleri 0-8 (7 GREEN, 8 ORANGE) |
 | acc_player_tracker | Tamam; `--selftest` 44 kontrol TAMAM (sentetik veri) |
-| acc_broadcasting_client | Selftest 35 kontrol (son commit mesajı) + canlı `--watch 120` TAMAM |
+| acc_broadcasting_client | Selftest 32 + badtest 25 kontrol (04.11.2026 gerçek çıktı) + canlı `--watch 120` TAMAM |
 | acc_event_detector | Yazıldı; `--selftest` 60 ve `--badtest` 55 TAMAM; canlı kaza testi yapıldı; kalan sorun: `engel_debounce=2` |
-| obs/* | SIRADA: plan hazır, Sahip onayı bekliyor (websocket-client Apache-2.0 kullanımı onay sorusu) |
+| obs/* | Tamam: clip_naming (6+9), obs_websocket_client (13+15), recording_controller (17+12) testleri sentetik veriyle geçti (04.11.2026); gerçek OBS ile `--canli` testi HENÜZ yapılmadı |
 | Ollama/Qwen uyarı metni, risk_engine, message_engine, tts_engine, main.py | Sırada |
 | acc_replay_controller, prediction/*, lfm_elo_target, main.py, requirements.txt, reports/ | Repoda YOK (git ls-files, 03.11.2026); prediction/crewchief/obs klasörlerinde yalnızca `__init__.py` var |
 | LFM verisi | Gerçek veri henüz YOK; sahte örnek dosyalar silindi (03.11.2026). LFM sonuç/lobi/profil JSON örneği gelince alan adları güncellenecek |

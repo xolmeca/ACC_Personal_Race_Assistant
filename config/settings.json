@@ -202,5 +202,10 @@
                          "connection_password":  "asd",
                          "command_password":  "",
                          "update_interval_ms":  250
-                     }
+                     },
+    "obs":  {
+                "host":  "localhost",
+                "port":  4455,
+                "klip_klasoru":  "data/clips"
+            }
 }
