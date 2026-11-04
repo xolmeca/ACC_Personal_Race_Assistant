@@ -766,6 +766,33 @@ class BroadcastingClient:
                     return cid
         return None
 
+    @staticmethod
+    def _isim_anahtar(metin) -> tuple:
+        import re
+        import unicodedata
+        t = str(metin or "").replace("\u0130", "i").replace("I", "i").replace("\u0131", "i").lower()
+        t = "".join(c for c in unicodedata.normalize("NFKD", t) if not unicodedata.combining(c))
+        return tuple(sorted(re.findall(r"[a-z0-9]+", t)))
+
+    def find_all_by_driver_name(self, isim: str) -> List[int]:
+        """Surucu adina gore (sira/buyuk-kucuk harf/Turkce harf farki yok sayilir) tum car_id'ler."""
+        hedef = self._isim_anahtar(isim)
+        if not hedef:
+            return []
+        bulunan = []
+        with self._lock:
+            for cid, e in self._entries.items():
+                for s in e.suruculer:
+                    if self._isim_anahtar(s.tam_ad()) == hedef:
+                        bulunan.append(cid)
+                        break
+        return bulunan
+
+    def find_by_driver_name(self, isim: str) -> Optional[int]:
+        """Yalnizca TEK eslesme varsa car_id doner; yok veya birden fazlaysa None (tahmin yok)."""
+        b = self.find_all_by_driver_name(isim)
+        return b[0] if len(b) == 1 else None
+
     def oturum(self) -> Optional[OturumGuncelleme]:
         with self._lock:
             return copy.copy(self._oturum) if self._oturum else None

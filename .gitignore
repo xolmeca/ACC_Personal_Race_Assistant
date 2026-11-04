@@ -42,3 +42,8 @@ test_result.txt
 *_log.txt
 ekran_yaris/
 ekran_goruntuleri/
+
+ad_*.txt
+harita.txt
+kod_*.txt
+arama_cikti.txt

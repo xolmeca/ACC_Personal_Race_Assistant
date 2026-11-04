@@ -1,11 +1,14 @@
-"""Zamanli oturumda replay: baslangic = simdiki oturum zamani - 20 sn. python replay_yaris.py"""
+﻿"""Zamanli oturumda replay: baslangic = simdiki oturum zamani - N sn (ms).
+Kullanim: python replay_yaris.py "Hakan Aksen"   (isim)  |  python replay_yaris.py 966   (yaris no)
+Hedef verilmezse odak_arac_id kullanilir (bu, oyuncu araci olmayabilir)."""
 from __future__ import annotations
 
+import sys
 import time
 
 import replay_oto as R
 import replay_ss as S
-from modules.acc.acc_broadcasting_client import track_data_istek_paketi
+from modules.acc.acc_broadcasting_client import entry_list_istek_paketi, track_data_istek_paketi
 from modules.acc.acc_replay_controller import instant_replay_paketi, replay_gonder
 
 R.LOG = "replay_yaris_log.txt"
@@ -18,9 +21,38 @@ def durum(cl) -> str:
             f"sess_ms={d.get('session_zamani_ms')} faz={d.get('faz_adi')} tip={d.get('session_tipi_adi')}")
 
 
+def oyuncu_bul(cl, conn, arg: str) -> int:
+    odak = int(R.oturum(cl).get("odak_arac_id") or 0)
+    if not arg:
+        R.log(f"hedef verilmedi, odak_arac_id kullaniliyor: {odak}")
+        return odak
+    no = int(arg) if arg.isdigit() else None
+    bulunan = None
+    for k in range(10):
+        bulunan = cl.find_by_race_number(no) if no is not None else cl.find_by_driver_name(arg)
+        if bulunan is not None:
+            break
+        if k == 2:
+            cl._gonder(entry_list_istek_paketi(conn))
+        time.sleep(1.0)
+    if bulunan is not None:
+        R.log(f"hedef {arg!r} -> carId {bulunan}")
+        return bulunan
+    R.log(f"UYARI: {arg!r} icin TEK arac bulunamadi (yok veya birden fazla), odak aracina dusuluyor: {odak}")
+    try:
+        with cl._lock:
+            adlar = [(cid, e.yaris_no, [s.tam_ad() for s in e.suruculer])
+                     for cid, e in list(cl._entries.items())[:8]]
+        R.log(f"  roster ornegi (ilk 8): {adlar}")
+    except Exception as e:
+        R.log(f"  roster okunamadi: {e!r}")
+    return odak
+
+
 def main() -> int:
     open(R.LOG, "w").close()
-    R.log("BASLADI. ACC'de zamanli oturum (yaris/siralama) ac, pistte surmeye basla.")
+    arg = " ".join(sys.argv[1:]).strip()
+    R.log(f"BASLADI hedef={arg!r}. ACC'de zamanli oturum (yaris/siralama) ac, pistte surmeye basla.")
     cl = R.baglan()
     if cl is None:
         R.log("BAGLANTI KURULAMADI")
@@ -46,8 +78,7 @@ def main() -> int:
         gecerli = sess >= 40000
         R.log(f"oturum zamani gecerli mi: {gecerli} (sess_ms={sess})")
         R.bip(2, 700)
-        oyuncu = int(R.oturum(cl).get('odak_arac_id') or 0)
-        R.log(f'oyuncu araci (odak_arac_id): {oyuncu} | arac listesi: {[a.car_id for a in cl.cars_snapshot()][:5]}')
+        oyuncu = oyuncu_bul(cl, conn, arg)
         if gecerli:
             plan = [("simdi-20sn (ms)", lambda s: s - 20000.0),
                     ("simdi-40sn (ms)", lambda s: s - 40000.0)]
@@ -56,15 +87,13 @@ def main() -> int:
         for i, (ad, f) in enumerate(plan, 1):
             now = R.oturum(cl).get("session_zamani_ms") or -1.0
             bas = max(0.0, f(now))
-            ids = [a.car_id for a in cl.cars_snapshot()]
-            odak = oyuncu
             try:
-                hexs = instant_replay_paketi(conn, bas, R.SURE_MS, odak).hex()
-                ok = replay_gonder(cl, bas, R.SURE_MS, odak)
+                hexs = instant_replay_paketi(conn, bas, R.SURE_MS, oyuncu).hex()
+                ok = replay_gonder(cl, bas, R.SURE_MS, oyuncu)
             except Exception as e:
                 hexs, ok = "-", f"HATA {e!r}"
             R.bip(i)
-            R.log(f"GONDER #{i} {ad}: now_ms={now} bas={bas} odak={odak} sonuc={ok} hex={hexs}")
+            R.log(f"GONDER #{i} {ad}: now_ms={now} bas={bas} odak={oyuncu} sonuc={ok} hex={hexs}")
             time.sleep(4.0)
             R.log("  +4s: " + durum(cl))
             S.ekran(f"{i}_{ad.split()[0]}.jpg".replace("(", "").replace(")", ""))
