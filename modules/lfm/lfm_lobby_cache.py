@@ -180,7 +180,7 @@ def normalize_participants(ham, fm):
             if not sid:
                 uyarilar.append(f"Satır {i} atlandı: steamid yok.")
                 continue
-            kayit = {"steamid": sid}
+            kayit = {"steamid": sid, "lfm_id": s.get("user_id"), "oyun_adi": s.get("name_on_server")}
             for alan, tip in CIKTI_ALANLARI:
                 ham_d = sec(s, aday(fm, alan))
                 if ham_d is None and alan == "name":
