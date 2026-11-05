@@ -1,4 +1,4 @@
-# KALDIĞIMIZ YER — ACC Personal Race Assistant
+﻿# KALDIÄIMIZ YER â€” ACC Personal Race Assistant
 
 Bu dosya, yeni bir Claude sohbetine baglam vermek icin hazirlandi.
 Asagidaki metni yeni sohbete yapistirin.
@@ -6,7 +6,7 @@ Asagidaki metni yeni sohbete yapistirin.
 ---
 
 ## PROJE
-ACC Personal Race Assistant — LFM'deki 30 dk ACC yarislarinda calisan,
+ACC Personal Race Assistant â€” LFM'deki 30 dk ACC yarislarinda calisan,
 tamamen yerel kisisel yaris asistani. Yalnizca kullanicinin araci ve
 komsu araclar izlenir. Olaylar events.json'a yazilir; yaris sonrasi OBS
 ile klip uretilir; CrewChief benzeri kisa Turkce uyarilar verilir.
