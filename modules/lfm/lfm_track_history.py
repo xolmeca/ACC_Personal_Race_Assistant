@@ -151,7 +151,22 @@ def satirlari_cikar(ham, fm):
         for k in fm["rows_keys"]:
             if isinstance(ham.get(k), list):
                 return ham, [x for x in ham[k] if isinstance(x, dict)]
+        alt = _liste_bul(ham.get("race_results"))
+        if alt:
+            return ham, alt
     return {}, []
+
+
+def _liste_bul(v):
+    """Ic ice sozlukte ilk dict listesini bulur (race_results > sinif > OVERALL)."""
+    if isinstance(v, list):
+        return [x for x in v if isinstance(x, dict)] or None
+    if isinstance(v, dict):
+        for x in v.values():
+            r = _liste_bul(x)
+            if r:
+                return r
+    return None
 
 
 def load_raw_results(klasor, fm, birim):

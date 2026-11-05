@@ -1,39 +1,36 @@
-﻿# GUNCEL DURUM (her gorev sonunda guncellenir, en fazla 40 satir)
-Tarih: 2026-11-05 (baska Claude hesabina devir icin guncellendi)
-Proje yolu: C:\Users\User\Documents\ACC_Personal_Race_Assistant
-Eski proje (referans, sadece oku): C:\Users\User\Desktop\ACC_AUTO_DIRECTOR_FINAL\AutoDirector
-Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md
+# GUNCEL DURUM (her gorev sonunda guncellenir, en fazla 40 satir)
+Tarih: 2026-11-05 (hesap devri #2, kota bitti)
+Proje: C:\Users\User\Documents\ACC_Personal_Race_Assistant
+Eski proje (sadece oku): C:\Users\User\Desktop\ACC_AUTO_DIRECTOR_FINAL\AutoDirector
+Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md, docs\proje_notlari.txt
 
 ## Biten
-- OBS/broadcasting/event_detector/player_tracker testleri temiz (broadcasting selftest 35).
-- Oturum ayristirici yamasi (_hud); kamera(50)/HUD(49) komutlari gercek ACC'de calisti.
-- REPLAY calisti: sadece ZAMANLI RACE oturumunda, antrenmanda calismadi. startSessionTime = MS (kesin).
-- acc_replay_controller baslangic_ms selftest 9/9. Isimle arac bulma find_by_driver_name test 12/12.
-- replay_yaris.py "Hakan Aksen" | <yaris_no> | hedefsiz. Isimle kisim gercek ACC'de DENENMEDI.
-- LFM modulleri modules\lfm altinda, 3 modul SELFTEST TAMAM (2026-11-05).
+- OBS/broadcasting/event_detector/player_tracker testleri temiz. Kamera/HUD/REPLAY gercek ACC'de calisti (REPLAY sadece zamanli RACE).
+- acc_shared_memory_reader selftest GECTI; --read gercek ACC acikken DENENMEDI. modules\lfm 3 modul selftest GECTI.
+- LFM lobi: https://api3.lowfuelmotorsport.com/api/race/{lobby_id} (TOKEN GEREKMEZ). 351701 -> 18 surucu: isim=vorname+nachname, elo, sr, lisans, lfm_id=user_id. satirlari_cikar_lobi ic ice sozluk yamasi yapildi.
+- LFM sonuc: ayni adreste bitmis yaris race_results>GT3>OVERALL[] icinde bestlap, car_name, car_number(kapi no), user_id, rating var.
+- lfm_track_history yamali (_liste_bul), settings results_urls=[.../race/351701]; --build --fetch calisti, Toyan best 106057ms DOGRU.
+- Profil: https://api3.lowfuelmotorsport.com/api/users/getUserData/{lfm_user_id}?with_achievements=true (girissiz; ACC Elo=rating_by_sim sim_id 1). /api/user sadece kendi hesap.
 
 ## Kararlar
-- Yarista LLM yok; proje yaris sonrasi odakli (olay kaydi, klip, rapor, pace). risk/message/tts askida.
-- Oyuncu araci ISIMDEN bulunur (LFM'de kapi no her yaris degisir). Sahip: Hakan Aksen.
-- Kod: VS Code+Continue+Ollama; zor kararlar Claude sohbetinde (ucretsiz plan, Claude Code yok, token az).
-- Calisma bicimi: kisa, tek adim, tek PowerShell komutu; gormedigin dosyaya yama yazma; betikler bip+log ile komut satirina donmeden calisir.
+- Yarista LLM yok; proje yaris sonrasi odakli. Oyuncu araci ISIMDEN bulunur (Hakan Aksen).
+- Anahtar LFM user_id (degismez), steamid onemsiz. LFM ismi "Aksen Hakan", ACC "Hakan Aksen" -> kelime kumesiyle esle.
+- Hedef (Crew Chief): "arkandan yaklasanin rank'i senden iyi", "arkadan gelenin bu pistteki en hizli turu xx.xxx". Hedef sira = lobi Elo siralamasinda yerim.
+- Kayitta arac = kapi numarasi (car_number) + kullanici adi olsun (kullanici istedi).
+- Calisma bicimi: kisa, tek PowerShell komutu, cikti bekle; gormedigin dosyaya yama yazma.
+- settings.json/.py dosyalarini Set-Content ile YAZMA (BOM); [IO.File]::WriteAllText + UTF8Encoding($false) kullan.
 
 ## Simdi
-- 1) (BITTI) lfm selftest 3/3 gecti.
-- 2) Zamanli yarista: python replay_yaris.py "Hakan Aksen"; log'da hedef -> carId; kamera kendi aracina kilitlendi mi.
-- 3) LFM gercek uc nokta (url), .env LFM_API_TOKEN, settings.json lfm bolumu: kullanicidan al, tek lobiyle dene.
-- 4) Sonra: lobi Elo'dan hedef sira ozelligi; replay'i olay/klip akisina bagla (OBS veya eski ffmpeg_ekran_kaydedici 10sn once/20sn sonra).
+- 1) track_history: pist anahtari track_name olmali (su an tum track sozlugu); arac=car_number+kullanici adi; eski cekilen_*.json kopyalarini sil (51 kayit/17 surucu = 3 kopya). normalize_row ve satir ~123-146 oku.
+- 2) Rakibin pistteki TUM zamanlarin en hizli turu: cok bitmis yarisi topla (profile/<id>/trackstats istegi BULUNAMADI).
+- 3) Hedef sira modulu (lobi Elo), ACC arac eslesmesi (isim kumesi), profil_url_template=getUserData sablonu.
+- 4) Zamanli yarista: python replay_yaris.py "Hakan Aksen"; log'da hedef->carId.
 
 ## Acik / dogrulanmayan
-- LFM uc nokta/alan adlari DOGRULANMADI; hedef sira (Elo) hesabi kodda YOK, LFM Elo formulu bilinmiyor.
-- lfm_profile_cache.py satir 178-385 incelenmedi. Lobi name ile ACC tam_ad eslesmesi LFM isim bicimine bagli.
-- Antrenmanda session_zamani_ms=-1; garajda arac listesi bos; odak_arac_id oyuncu araci DEGIL.
-- Eski kod kurali: kamera seti+adi birlikte veya ikisi bos; controller'da kontrol yok.
-- command_password ACC ile ayni olmali; engel_debounce=2; LFM gercek JSON ornegi.
+- LFM Elo formulu bilinmiyor; trackstats API adresi yok; DNF bestlap bozuk (31:23.647) elenmeli.
+- Antrenmanda session_zamani_ms=-1; command_password ACC ile ayni olmali; engel_debounce=2.
+- GUVENLIK: sohbette LFM oturum anahtari sizdi -> LFM'den cikis yap/tekrar gir. F12'de "cURL kopyala" KULLANMA, "URL'yi kopyala".
 
 ## Yeni hesaba notlar
-- CLAUDE.md + bu dosyayi yukle. Dosya okutmak icin PowerShell ile dosyaya yazdirip yukle (panoya degil).
-- PowerShell: parantez icinde ; yerine $( ) kullan; Python'a pipe'ta Turkce harf bozulur, \u kacislari kullan.
-- GitHub tree/arama sayfalari otomatik erisime kapali; kullanici elle kopyalar.
-- LFM URL/token eski programda ve bu makinede YOK (arandi, 2026-11-05). Adim 3 askida; tarayicidan F12>Network ile bulunacak.
-- LFM lobi TAMAM: url=https://api3.lowfuelmotorsport.com/api/race/{lobby_id}, token GEREKMEZ, 351701 -> 18 surucu isim/elo/sr/lisans 0 uyari (2026-11-05). LFM isim sirasi "Aksen Hakan" (ACC: "Hakan Aksen") -> kelime kumesiyle esle. Profil URL yok (/api/user sadece kendi hesabi). Adim 3 BITTI, sirada: lobi Elo ile hedef sira.
+- CLAUDE.md + bu dosyayi yukle. Ilk mesaj: "Projeyi devral. CLAUDE.md'ye uy, GUNCEL_DURUM.md oku, 5 satirda ozetle, siradaki adimi soyle. Ucretsiz plandayim, kisa ve tek adimli yonlendir."
+- PowerShell: parantez icinde ; yerine $( ); Python pipe'ta Turkce harf bozulur. GitHub/LFM sayfalarina otomatik erisim yok, cikti elle yapistirilir.
