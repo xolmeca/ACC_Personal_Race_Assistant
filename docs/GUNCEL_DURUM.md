@@ -35,3 +35,4 @@ Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md
 - CLAUDE.md + bu dosyayi yukle. Dosya okutmak icin PowerShell ile dosyaya yazdirip yukle (panoya degil).
 - PowerShell: parantez icinde ; yerine $( ) kullan; Python'a pipe'ta Turkce harf bozulur, \u kacislari kullan.
 - GitHub tree/arama sayfalari otomatik erisime kapali; kullanici elle kopyalar.
+- LFM URL/token eski programda ve bu makinede YOK (arandi, 2026-11-05). Adim 3 askida; tarayicidan F12>Network ile bulunacak.
