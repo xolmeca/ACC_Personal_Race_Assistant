@@ -10,7 +10,7 @@
                 "results_urls":  [
 
                                  ],
-                "lobby_url_template":  "",
+                "lobby_url_template":  "https://api3.lowfuelmotorsport.com/api/race/{lobby_id}",
                 "lobby_cache_dir":  "data/lfm_cache",
                 "lobby_token_env":  "LFM_API_TOKEN",
                 "field_map":  {
@@ -209,3 +209,5 @@
                 "klip_klasoru":  "data/clips"
             }
 }
+
+

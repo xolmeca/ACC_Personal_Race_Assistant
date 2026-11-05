@@ -152,8 +152,13 @@ def satirlari_cikar_lobi(ham, fm):
         return [x for x in ham if isinstance(x, dict)]
     if isinstance(ham, dict):
         for k in aday(fm, "rows_keys"):
-            if isinstance(ham.get(k), list):
-                return [x for x in ham[k] if isinstance(x, dict)]
+            v = ham.get(k)
+            if isinstance(v, dict):
+                alt = satirlari_cikar_lobi(v, fm)
+                if alt:
+                    return alt
+            elif isinstance(v, list):
+                return [x for x in v if isinstance(x, dict)]
     return []
 
 
