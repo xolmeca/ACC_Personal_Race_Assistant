@@ -183,6 +183,9 @@ def normalize_participants(ham, fm):
             kayit = {"steamid": sid}
             for alan, tip in CIKTI_ALANLARI:
                 ham_d = sec(s, aday(fm, alan))
+                if ham_d is None and alan == "name":
+                    ad_ = " ".join(str(x).strip() for x in (sec(s, ["vorname"]), sec(s, ["nachname"])) if x)
+                    ham_d = ad_ or None
                 if ham_d is None:
                     uyarilar.append(f"Sürücü {sid}: '{alan}' alanı eksik.")
                     kayit[alan] = None

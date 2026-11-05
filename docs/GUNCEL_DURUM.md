@@ -36,4 +36,4 @@ Ayrinti: docs\claude_devir.md, docs\PROJE_KANUNU.md
 - PowerShell: parantez icinde ; yerine $( ) kullan; Python'a pipe'ta Turkce harf bozulur, \u kacislari kullan.
 - GitHub tree/arama sayfalari otomatik erisime kapali; kullanici elle kopyalar.
 - LFM URL/token eski programda ve bu makinede YOK (arandi, 2026-11-05). Adim 3 askida; tarayicidan F12>Network ile bulunacak.
-- LFM lobi URL=https://api3.lowfuelmotorsport.com/api/race/{lobby_id} (token GEREKMEZ), 351701 cekildi 18 surucu elo/sr OK. Eksik: isim (vorname+nachname birlestirme). Steamid=steam_id. Profil URL yok (/api/user sadece kendi hesabi).
+- LFM lobi TAMAM: url=https://api3.lowfuelmotorsport.com/api/race/{lobby_id}, token GEREKMEZ, 351701 -> 18 surucu isim/elo/sr/lisans 0 uyari (2026-11-05). LFM isim sirasi "Aksen Hakan" (ACC: "Hakan Aksen") -> kelime kumesiyle esle. Profil URL yok (/api/user sadece kendi hesabi). Adim 3 BITTI, sirada: lobi Elo ile hedef sira.
